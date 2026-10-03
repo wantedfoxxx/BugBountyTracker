@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Hunting OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      🐛 <span>Hunting OS</span>
+    </div>
+
+    <button class="nav active" data-page="dashboard">
+      📊 Dashboard
+    </button>
+
+    <button class="nav" data-page="bugbounty">
+      🐛 Bug Bounty
+    </button>
+
+    <button class="nav" data-page="content">
+      📢 Content
+    </button>
+
+    <button class="nav" data-page="routine">
+      ⏰ Personal Timetable
+    </button>
+
+    <button class="nav" data-page="journal">
+      📖 Daily Journal
+    </button>
+
+    <button class="nav" data-page="settings">
+      ⚙️ Settings
+    </button>
+
+  </aside>
+
+
+  <!-- MAIN -->
+  <main>
+
+    <header>
+
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="currentDate"></p>
+      </div>
+
+      <div class="header-actions">
+        <button class="secondary" id="quickNoteBtn">
+          📝 Quick Note
+        </button>
+
+        <button class="primary" id="headerAction">
+          + Add Target
+        </button>
+      </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         DASHBOARD
+    ====================================================== -->
+
+    <section id="dashboard" class="page active">
+
+      <div class="stats">
+
+        <div class="stat">
+          <span>🐛 Targets</span>
+          <strong id="dashTargets">0</strong>
+        </div>
+
+        <div class="stat">
+          <span>⏱ Hunting Time</span>
+          <strong id="dashTime">0h 0m</strong>
+        </div>
+
+        <div class="stat">
+          <span>🔎 Findings</span>
+          <strong id="dashFindings">0</strong>
+        </div>
+
+        <div class="stat">
+          <span>📤 Reports</span>
+          <strong id="dashReports">0</strong>
+        </div>
+
+        <div class="stat">
+          <span>📢 Content</span>
+          <strong id="dashContent">0</strong>
+        </div>
+
+        <div class="stat">
+          <span>⏰ Routine</span>
+          <strong id="dashRoutine">0%</strong>
+        </div>
+
+      </div>
+
+
+      <div class="dashboard-grid">
+
+        <!-- ROUTINE -->
+        <div class="panel">
+
+          <div class="panel-title">
+            <h2>⏰ Today's Routine</h2>
+
+            <button
+              class="small-btn"
+              onclick="showPage('routine')">
+              Open
+            </button>
+          </div>
+
+          <div id="dashboardRoutine"></div>
+
+        </div>
+
+
+        <!-- CURRENT TARGET -->
+        <div class="panel">
+
+          <div class="panel-title">
+            <h2>🎯 Current Target</h2>
+
+            <button
+              class="small-btn"
+              onclick="showPage('bugbounty')">
+              Open
+            </button>
+          </div>
+
+          <div id="dashboardTarget"></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONTENT -->
+      <div class="panel">
+
+        <div class="panel-title">
+          <h2>📢 Content Queue</h2>
+
+          <button
+            class="small-btn"
+            onclick="showPage('content')">
+            Manage
+          </button>
+        </div>
+
+        <div id="dashboardContent"></div>
+
+      </div>
+
+
+      <!-- RECENT FINDINGS -->
+      <div class="panel">
+
+        <div class="panel-title">
+          <h2>🐛 Recent Findings</h2>
+
+          <button
+            class="small-btn"
+            onclick="showPage('bugbounty')">
+            View
+          </button>
+        </div>
+
+        <div id="dashboardFindings"></div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         BUG BOUNTY
+    ====================================================== -->
+
+    <section id="bugbounty" class="page">
+
+      <div class="tabs">
+
+        <button class="tab active" data-tab="targetsTab">
+          🎯 Targets
+        </button>
+
+        <button class="tab" data-tab="findingsTab">
+          🐛 Findings
+        </button>
+
+        <button class="tab" data-tab="reportsTab">
+          📤 Reports
+        </button>
+
+        <button class="tab" data-tab="sessionsTab">
+          ⏱ Sessions
+        </button>
+
+      </div>
+
+
+      <!-- TARGETS -->
+      <div id="targetsTab" class="tab-content active">
+
+        <div class="toolbar">
+
+          <input
+            id="targetSearch"
+            placeholder="Search target...">
+
+          <select id="targetPlatformFilter">
+            <option value="all">All Platforms</option>
+            <option>HackerOne</option>
+            <option>Bugcrowd</option>
+            <option>Intigriti</option>
+            <option>Other</option>
+          </select>
+
+          <button
+            class="primary"
+            onclick="openModal('targetModal')">
+            + Add Target
+          </button>
+
+        </div>
+
+        <div id="targetsList"></div>
+
+      </div>
+
+
+      <!-- FINDINGS -->
+      <div id="findingsTab" class="tab-content">
+
+        <div class="panel">
+
+          <div class="panel-title">
+            <h2>🐛 Findings</h2>
+
+            <button
+              class="primary"
+              onclick="openModal('findingModal')">
+              + Finding
+            </button>
+          </div>
+
+          <div id="findingsList"></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- REPORTS -->
+      <div id="reportsTab" class="tab-content">
+
+        <div class="panel">
+
+          <div class="panel-title">
+            <h2>📤 Reports</h2>
+
+            <button
+              class="primary"
+              onclick="openModal('reportModal')">
+              + Report
+            </button>
+
+          </div>
+
+          <div id="reportsList"></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- SESSIONS -->
+      <div id="sessionsTab" class="tab-content">
+
+        <div class="panel">
+
+          <div class="panel-title">
+            <h2>⏱ Hunting Sessions</h2>
+          </div>
+
+          <div id="sessionsList"></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CONTENT CREATION
+    ====================================================== -->
+
+    <section id="content" class="page">
+
+      <div class="content-platforms">
+
+        <div class="platform-card youtube">
+          <div class="platform-icon">▶</div>
+          <h2>YouTube</h2>
+          <p id="youtubeCount">0 items</p>
+        </div>
+
+        <div class="platform-card instagram">
+          <div class="platform-icon">◎</div>
+          <h2>Instagram</h2>
+          <p id="instagramCount">0 items</p>
+        </div>
+
+        <div class="platform-card twitter">
+          <div class="platform-icon">𝕏</div>
+          <h2>Twitter / X</h2>
+          <p id="twitterCount">0 items</p>
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div class="panel-title">
+
+          <h2>📢 Content Planner</h2>
+
+          <button
+            class="primary"
+            onclick="openModal('contentModal')">
+            + Add Content
+          </button>
+
+        </div>
+
+        <div id="contentList"></div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PERSONAL ROUTINE
+    ====================================================== -->
+
+    <section id="routine" class="page">
+
+      <div class="routine-header">
+
+        <div>
+          <h2>⏰ Personal Timetable</h2>
+          <p>
+            Your normal daily routine. Check each task when completed.
+          </p>
+        </div>
+
+        <button
+          class="primary"
+          onclick="openModal('routineModal')">
+          + Add Routine
+        </button>
+
+      </div>
+
+
+      <div class="routine-progress">
+
+        <div class="progress-info">
+
+          <span>Today's Progress</span>
+
+          <strong id="routinePercent">
+            0%
+          </strong>
+
+        </div>
+
+        <div class="progress">
+          <div id="routineProgressBar"></div>
+        </div>
+
+        <small id="routineCount">
+          0 / 0 completed
+        </small>
+
+      </div>
+
+
+      <div class="panel">
+
+        <div id="routineList"></div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         JOURNAL
+    ====================================================== -->
+
+    <section id="journal" class="page">
+
+      <div class="panel">
+
+        <div class="panel-title">
+
+          <h2>📖 Daily Journal</h2>
+
+          <input
+            type="date"
+            id="journalDate">
+
+        </div>
+
+        <label>What did you work on?</label>
+
+        <textarea
+          id="journalWork"
+          placeholder="Write what you worked on today...">
+        </textarea>
+
+
+        <label>What did you learn?</label>
+
+        <textarea
+          id="journalLearn"
+          placeholder="What did you learn today?">
+        </textarea>
+
+
+        <label>Important notes</label>
+
+        <textarea
+          id="journalNotes"
+          placeholder="Anything important...">
+        </textarea>
+
+
+        <label>Tomorrow's plan</label>
+
+        <textarea
+          id="journalTomorrow"
+          placeholder="What will you continue tomorrow?">
+        </textarea>
+
+
+        <button
+          class="primary"
+          id="saveJournal">
+          Save Journal
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SETTINGS
+    ====================================================== -->
+
+    <section id="settings" class="page">
+
+      <div class="panel">
+
+        <h2>⚙️ Settings</h2>
+
+        <p class="muted">
+          Your data is stored locally in this browser.
+        </p>
+
+        <br>
+
+        <button
+          class="secondary"
+          onclick="exportData()">
+          ⬇ Export Backup
+        </button>
+
+        <button
+          class="secondary"
+          onclick="document.getElementById('importFile').click()">
+          ⬆ Import Backup
+        </button>
+
+        <input
+          type="file"
+          id="importFile"
+          accept=".json"
+          hidden>
+
+        <br><br>
+
+        <button
+          class="danger"
+          onclick="clearAllData()">
+          Delete All Data
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+
+<!-- =====================================================
+     HUNTING SESSION BAR
+====================================================== -->
+
+<div class="session-bar">
+
+  <div class="session-info">
+
+    <span id="sessionStatus">
+      No active hunting session
+    </span>
+
+    <strong id="timer">
+      00:00:00
+    </strong>
+
+  </div>
+
+
+  <select id="sessionTarget">
+
+    <option value="">
+      Select target
+    </option>
+
+  </select>
+
+
+  <button
+    class="primary"
+    id="startSession">
+    ▶ Start Hunting
+  </button>
+
+  <button
+    class="danger hidden"
+    id="stopSession">
+    ■ Stop
+  </button>
+
+</div>
+
+
+
+<!-- =====================================================
+     TARGET MODAL
+====================================================== -->
+
+<div class="modal" id="targetModal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+
+      <h2>Add Bug Bounty Target</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('targetModal')">
+        ×
+      </button>
+
+    </div>
+
+
+    <input
+      id="targetName"
+      placeholder="Program name">
+
+
+    <select id="targetPlatform">
+
+      <option>HackerOne</option>
+      <option>Bugcrowd</option>
+      <option>Intigriti</option>
+      <option>Other</option>
+
+    </select>
+
+
+    <input
+      id="targetUrl"
+      placeholder="Program URL">
+
+
+    <input
+      id="targetScope"
+      placeholder="Scope e.g. *.example.com">
+
+
+    <select id="targetPriority">
+
+      <option>Low</option>
+      <option selected>Medium</option>
+      <option>High</option>
+
+    </select>
+
+
+    <textarea
+      id="targetNotes"
+      placeholder="Program notes...">
+    </textarea>
+
+
+    <button
+      class="primary full"
+      id="saveTarget">
+      Save Target
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FINDING MODAL
+====================================================== -->
+
+<div class="modal" id="findingModal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+
+      <h2>Add Finding</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('findingModal')">
+        ×
+      </button>
+
+    </div>
+
+
+    <input
+      id="findingTitle"
+      placeholder="Finding title">
+
+
+    <input
+      id="findingTarget"
+      placeholder="Target / endpoint">
+
+
+    <select id="findingSeverity">
+
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+      <option>Critical</option>
+
+    </select>
+
+
+    <select id="findingStatus">
+
+      <option>Investigating</option>
+      <option>Needs Verification</option>
+      <option>Confirmed</option>
+      <option>Reported</option>
+      <option>Closed</option>
+
+    </select>
+
+
+    <textarea
+      id="findingNotes"
+      placeholder="Notes / evidence / next step...">
+    </textarea>
+
+
+    <button
+      class="primary full"
+      id="saveFinding">
+      Save Finding
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     REPORT MODAL
+====================================================== -->
+
+<div class="modal" id="reportModal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+
+      <h2>Add Report</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('reportModal')">
+        ×
+      </button>
+
+    </div>
+
+
+    <input
+      id="reportTitle"
+      placeholder="Report title">
+
+
+    <input
+      id="reportTarget"
+      placeholder="Target">
+
+
+    <select id="reportStatus">
+
+      <option>Draft</option>
+      <option>Submitted</option>
+      <option>Triaged</option>
+      <option>Resolved</option>
+      <option>Rejected</option>
+
+    </select>
+
+
+    <input
+      id="reportUrl"
+      placeholder="Report URL">
+
+
+    <button
+      class="primary full"
+      id="saveReport">
+      Save Report
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     CONTENT MODAL
+====================================================== -->
+
+<div class="modal" id="contentModal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+
+      <h2>Add Content</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('contentModal')">
+        ×
+      </button>
+
+    </div>
+
+
+    <select id="contentPlatform">
+
+      <option>YouTube</option>
+      <option>Instagram</option>
+      <option>Twitter / X</option>
+
+    </select>
+
+
+    <input
+      id="contentTitle"
+      placeholder="Content title / idea">
+
+
+    <select id="contentStatus">
+
+      <option>Idea</option>
+      <option>Draft</option>
+      <option>Recording</option>
+      <option>Editing</option>
+      <option>Scheduled</option>
+      <option>Posted</option>
+
+    </select>
+
+
+    <select id="contentPriority">
+
+      <option>Low</option>
+      <option selected>Medium</option>
+      <option>High</option>
+
+    </select>
+
+
+    <textarea
+      id="contentNotes"
+      placeholder="Notes, script idea, caption, etc...">
+    </textarea>
+
+
+    <button
+      class="primary full"
+      id="saveContent">
+      Save Content
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ROUTINE MODAL
+====================================================== -->
+
+<div class="modal" id="routineModal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+
+      <h2>Add Routine</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('routineModal')">
+        ×
+      </button>
+
+    </div>
+
+
+    <input
+      type="time"
+      id="routineTime">
+
+
+    <input
+      id="routineTitle"
+      placeholder="Routine activity">
+
+
+    <input
+      id="routineDescription"
+      placeholder="Short description">
+
+
+    <button
+      class="primary full"
+      id="saveRoutine">
+      Add Routine
+    </button>
+
+  </div>
+
+</div>
+
+
+
+<!-- QUICK NOTE -->
+
+<div class="modal" id="quickNoteModal">
+
+  <div class="modal-box">
+
+    <div class="modal-title">
+
+      <h2>📝 Quick Note</h2>
+
+      <button
+        class="close"
+        onclick="closeModal('quickNoteModal')">
+        ×
+      </button>
+
+    </div>
+
+
+    <textarea
+      id="quickNote"
+      placeholder="Write something quickly...">
+    </textarea>
+
+
+    <button
+      class="primary full"
+      id="saveQuickNote">
+      Save Note
+    </button>
+
+  </div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
